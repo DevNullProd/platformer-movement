@@ -114,19 +114,8 @@ partial class PlayerMovement : MonoBehaviour
   }
 
   private void FixedUpdate(){
-    // Handle Run
-    if(!IsDashing){
-      if(IsWallJumping)
-        Run(Data.wallJumpRunLerp);
-      else
-        Run(1);
-
-    }else if(_isDashAttacking)
-      Run(Data.dashEndRunLerp);
-
-    // Handle Slide
-    if(IsSliding)
-      Slide();
+    FixedUpdateRun();
+    FixedUpdateSlide();
   }
 
   /////////////////////////////////////////////////////
