@@ -1,3 +1,12 @@
+/*
+ * Original created by @DawnosaurDev at youtube.com/c/DawnosaurStudios
+ * Thanks so much for checking this out and I hope you find it helpful!
+ * If you have any further queries, questions or feedback feel free to reach out on my twitter or leave a comment on youtube :D
+ * Feel free to use this in your own games, and I'd love to see anything you make!
+ *
+ * Refactored by @DevNullProd at https://devnullprod.com/
+ */
+
 using UnityEngine;
 
 partial class PlayerMovement : MonoBehaviour
