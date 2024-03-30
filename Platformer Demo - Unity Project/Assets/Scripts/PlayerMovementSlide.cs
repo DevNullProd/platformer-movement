@@ -12,6 +12,12 @@ partial class PlayerMovement
       IsSliding = false;
   }
 
+  void FixedUpdateSlide(){
+    // Handle Slide
+    if(IsSliding)
+      Slide();
+  }
+
   public bool CanSlide(){
     return LastOnWallTime > 0 &&
         !IsJumping &&

@@ -91,5 +91,4 @@ partial class PlayerMovement
     _dashRefilling = false;
     _dashesLeft = Mathf.Min(Data.dashAmount, _dashesLeft + 1);
   }
-
 }
