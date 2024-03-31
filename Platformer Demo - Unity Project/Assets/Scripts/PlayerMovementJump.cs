@@ -3,6 +3,24 @@ using UnityEngine;
 // Handles PlayerMovement Jump
 partial class PlayerMovement
 {
+  private bool IsInJumpApexState{
+    get{
+      return IsJumping || IsWallJumping || _isJumpFalling;
+    }
+  }
+
+  private bool HasJumpApexVelocity{
+    get{
+      return Mathf.Abs(RB.velocity.y) < Data.jumpHangTimeThreshold;
+    }
+  }
+
+  private bool AtJumpApex{
+    get{
+      return IsInJumpApexState && HasJumpApexVelocity;
+    }
+  }
+
   private bool ShouldEndWallJump{
     get{
       return Time.time - _wallJumpStartTime > Data.wallJumpTime;
