@@ -47,6 +47,7 @@ partial class PlayerMovement : MonoBehaviour
   private int _lastWallJumpDir;
 
   // Dash
+  private float _dashStartTime;
   private int _dashesLeft;
   private bool _dashRefilling;
   private Vector2 _lastDashDir;

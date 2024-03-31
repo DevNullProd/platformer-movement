@@ -4,35 +4,57 @@ using UnityEngine;
 // Handles PlayerMovement Dash
 partial class PlayerMovement
 {
-  void UpdateDashChecks(){
-    if(CanDash() && LastPressedDashTime > 0){
-      // Freeze game for split second. Adds juiciness and a bit
-      // of forgiveness over directional input
-      Sleep(Data.dashSleepTime); 
-
-      // If not direction pressed, dash forward
-      if(_moveInput != Vector2.zero)
-        _lastDashDir = _moveInput;
-      else
-        _lastDashDir = IsFacingRight ?
-          Vector2.right : Vector2.left;
-
-      IsDashing = true;
-      IsJumping = false;
-      IsWallJumping = false;
-      _isJumpCut = false;
-
-      StartCoroutine(nameof(StartDash), _lastDashDir);
+  private bool ShouldRefillDash{
+    get{
+      return !IsDashing &&
+        !_dashRefilling &&
+        OnGround && _dashesLeft < Data.dashAmount;
     }
   }
 
-  private bool CanDash(){
-    if(!IsDashing &&
-        _dashesLeft < Data.dashAmount &&
-        LastOnGroundTime > 0 && !_dashRefilling)
+  private bool CanDash{
+    get{
+      return _dashesLeft > 0 && LastPressedDashTime > 0;
+    }
+  }
+
+  private bool DuringDashAttack{
+    get{
+      return Time.time - _dashStartTime <= Data.dashAttackTime;
+    }
+  }
+
+  private bool DuringDashEnd{
+    get{
+      return Time.time - _dashStartTime <= Data.dashEndTime;
+    }
+  }
+
+  ///
+
+  void UpdateDashChecks(){
+    if(ShouldRefillDash)
       StartCoroutine(nameof(RefillDash), 1);
 
-    return _dashesLeft > 0;
+    if(!CanDash) return;
+
+    // Freeze game for split second. Adds juiciness and a bit
+    // of forgiveness over directional input
+    Sleep(Data.dashSleepTime);
+
+    // If not direction pressed, dash forward
+    if(_moveInput != Vector2.zero)
+      _lastDashDir = _moveInput;
+    else
+      _lastDashDir = IsFacingRight ?
+        Vector2.right : Vector2.left;
+
+    IsDashing = true;
+    IsJumping = false;
+    IsWallJumping = false;
+    _isJumpCut = false;
+
+    StartCoroutine(nameof(StartDash), _lastDashDir);
   }
 
   //Dash Coroutine
@@ -45,7 +67,7 @@ partial class PlayerMovement
     LastOnGroundTime = 0;
     LastPressedDashTime = 0;
 
-    float startTime = Time.time;
+    _dashStartTime = Time.time;
 
     _dashesLeft--;
     _isDashAttacking = true;
@@ -54,7 +76,7 @@ partial class PlayerMovement
 
     // Keep the player's velocity at the dash speed during
     // the "attack" phase (in celeste the first 0.15s)
-    while(Time.time - startTime <= Data.dashAttackTime){
+    while(DuringDashAttack){
       RB.velocity = dir.normalized * Data.dashSpeed;
 
       // Pauses the loop until the next frame, creating
@@ -64,7 +86,7 @@ partial class PlayerMovement
       yield return null;
     }
 
-    startTime = Time.time;
+    _dashStartTime = Time.time;
     _isDashAttacking = false;
 
     // Begins the "end" of our dash where we return some control
@@ -73,7 +95,7 @@ partial class PlayerMovement
     SetGravityScale(Data.gravityScale);
     RB.velocity = Data.dashEndSpeed * dir.normalized;
 
-    while(Time.time - startTime <= Data.dashEndTime){
+    while(DuringDashEnd){
       yield return null;
     }
 

@@ -4,6 +4,18 @@ using UnityEngine;
 // PlayerMovement Helpers
 partial class PlayerMovement
 {
+  private bool InAir{
+    get{
+      return LastOnGroundTime < 0;
+    }
+  }
+
+  private bool OnGround{
+    get{
+      return LastOnGroundTime > 0;
+    }
+  }
+
   void UpdateTimers(){
     LastOnGroundTime -= Time.deltaTime;
     LastOnWallTime -= Time.deltaTime;

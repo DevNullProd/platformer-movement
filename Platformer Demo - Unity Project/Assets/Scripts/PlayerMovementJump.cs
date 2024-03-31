@@ -12,7 +12,7 @@ partial class PlayerMovement
     if(IsWallJumping && Time.time - _wallJumpStartTime > Data.wallJumpTime)
       IsWallJumping = false;
 
-    if(LastOnGroundTime > 0 && !IsJumping && !IsWallJumping){
+    if(OnGround && !IsJumping && !IsWallJumping){
       _isJumpCut = false;
       _isJumpFalling = false;
     }
@@ -45,7 +45,7 @@ partial class PlayerMovement
   }
 
   private bool CanJump(){
-    return LastOnGroundTime > 0 && !IsJumping;
+    return OnGround && !IsJumping;
   }
 
   private bool CanWallJump(){
